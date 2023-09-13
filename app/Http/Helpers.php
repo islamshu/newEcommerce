@@ -325,6 +325,70 @@ if (!function_exists('cart_product_price')) {
         }
     }
 }
+if (!function_exists('cart_product_price_without_sumble')) {
+    function cart_product_price_without_sumble($cart_product, $product, $formatted = true, $tax = true)
+    {
+        if ($product->auction_product == 0) {
+            $str = '';
+            if ($cart_product['variation'] != null) {
+                $str = $cart_product['variation'];
+            }
+            $price = 0;
+            $product_stock = $product->stocks->where('variant', $str)->first();
+            if ($product_stock) {
+                $price = $product_stock->price;
+            }
+
+            if ($product->wholesale_product) {
+                $wholesalePrice = $product_stock->wholesalePrices->where('min_qty', '<=', $cart_product['quantity'])->where('max_qty', '>=', $cart_product['quantity'])->first();
+                if ($wholesalePrice) {
+                    $price = $wholesalePrice->price;
+                }
+            }
+
+            //discount calculation
+            $discount_applicable = false;
+
+            if ($product->discount_start_date == null) {
+                $discount_applicable = true;
+            } elseif (
+                strtotime(date('d-m-Y H:i:s')) >= $product->discount_start_date &&
+                strtotime(date('d-m-Y H:i:s')) <= $product->discount_end_date
+            ) {
+                $discount_applicable = true;
+            }
+
+            if ($discount_applicable) {
+                if ($product->discount_type == 'percent') {
+                    $price -= ($price * $product->discount) / 100;
+                } elseif ($product->discount_type == 'amount') {
+                    $price -= $product->discount;
+                }
+            }
+        } else {
+            $price = $product->bids->max('amount');
+        }
+
+        //calculation of taxes 
+        if ($tax) {
+            $taxAmount = 0;
+            foreach ($product->taxes as $product_tax) {
+                if ($product_tax->tax_type == 'percent') {
+                    $taxAmount += ($price * $product_tax->tax) / 100;
+                } elseif ($product_tax->tax_type == 'amount') {
+                    $taxAmount += $product_tax->tax;
+                }
+            }
+            $price += $taxAmount;
+        }
+
+        if ($formatted) {
+            return (convert_price($price));
+        } else {
+            return $price;
+        }
+    }
+}
 
 if (!function_exists('cart_product_tax')) {
     function cart_product_tax($cart_product, $product, $formatted = true)

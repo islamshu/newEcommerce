@@ -477,31 +477,6 @@
                     </div>
                 </div>
 
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0 h6">{{translate('Cash On Delivery')}}</h5>
-                    </div>
-                    <div class="card-body">
-                        @if (get_setting('cash_payment') == '1')
-                            <div class="form-group row">
-                                <label class="col-md-6 col-from-label">{{translate('Status')}}</label>
-                                <div class="col-md-6">
-                                    <label class="aiz-switch aiz-switch-success mb-0">
-                                        <input type="checkbox" name="cash_on_delivery" value="1" checked="">
-                                        <span></span>
-                                    </label>
-                                </div>
-                            </div>
-                        @else
-                            <p>
-                                {{ translate('Cash On Delivery option is disabled. Activate this feature from here') }}
-                                <a href="{{route('activation.index')}}" class="aiz-side-nav-link {{ areActiveRoutes(['shipping_configuration.index','shipping_configuration.edit','shipping_configuration.update'])}}">
-                                    <span class="aiz-side-nav-text">{{translate('Cash Payment Activation')}}</span>
-                                </a>
-                            </p>
-                        @endif
-                    </div>
-                </div>
 
                 <div class="card">
                     <div class="card-header">

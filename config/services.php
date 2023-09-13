@@ -47,6 +47,9 @@ return [
         'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
         'redirect'      => env('APP_URL').'/social-login/facebook/callback',
     ],
+    'telegram-bot-api' => [
+        'token' => env('TELEGRAM_BOT_TOKEN', 'YOUR BOT TOKEN HERE')
+    ],
 
     'twitter' => [
         'client_id'     => env('TWITTER_CLIENT_ID'),

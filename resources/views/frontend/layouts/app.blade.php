@@ -569,7 +569,7 @@
                         if(data.status == 1){
                             $('#addToCart-modal-body').html(data.modal_view);
                             updateNavCart(data.nav_cart_view,data.cart_count);
-                            window.location.replace("{{ route('cart') }}");
+                            window.location.replace("{{ route('cart2') }}");
                         }
                         else{
                             $('#addToCart-modal-body').html(null);

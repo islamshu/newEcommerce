@@ -84,13 +84,13 @@
         <div class="py-3 text-center border-top mx-4" style="border-color: #e5e5e5 !important;">
             <div class="row gutters-10 justify-content-center">
                 <div class="col-sm-6 mb-2">
-                    <a href="{{ route('cart') }}" class="btn btn-warning btn-sm btn-block rounded-4 text-white">
+                    <a href="{{ route('cart2') }}" class="btn btn-warning btn-sm btn-block rounded-4 text-white">
                         {{ translate('View cart') }}
                     </a>
                 </div>
                 @if (Auth::check())
                 <div class="col-sm-6">
-                    <a href="{{ route('checkout.shipping_info') }}" class="btn btn-primary btn-sm btn-block rounded-4">
+                    <a href="{{ route('checkout.shipping') }}" class="btn btn-primary btn-sm btn-block rounded-4">
                         {{ translate('Checkout') }}
                     </a>
                 </div>

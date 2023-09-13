@@ -37,6 +37,29 @@ class CartController extends Controller
 
         return view('frontend.view_cart', compact('carts'));
     }
+    public function index2(Request $request){
+        if (auth()->user() != null) {
+            $user_id = Auth::user()->id;
+            if ($request->session()->get('temp_user_id')) {
+                Cart::where('temp_user_id', $request->session()->get('temp_user_id'))
+                    ->update(
+                        [
+                            'user_id' => $user_id,
+                            'temp_user_id' => null
+                        ]
+                    );
+
+                Session::forget('temp_user_id');
+            }
+            $carts = Cart::where('user_id', $user_id)->get();
+        } else {
+            $temp_user_id = $request->session()->get('temp_user_id');
+            // $carts = Cart::where('temp_user_id', $temp_user_id)->get();
+            $carts = ($temp_user_id != null) ? Cart::where('temp_user_id', $temp_user_id)->get() : [];
+        }
+
+        return view('frontend.view_cart2', compact('carts'));
+    }
 
     public function showCartModal(Request $request)
     {

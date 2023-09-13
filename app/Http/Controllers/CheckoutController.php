@@ -13,6 +13,7 @@ use App\Models\Address;
 use App\Models\Carrier;
 use App\Models\CombinedOrder;
 use App\Models\Product;
+use App\Models\User;
 use App\Utility\PayhereUtility;
 use App\Utility\NotificationUtility;
 use Session;
@@ -24,6 +25,23 @@ class CheckoutController extends Controller
     public function __construct()
     {
         //
+    }
+    public function shipping_dond(Request $request){
+        $cart = session('cart');
+        $cart['cart_info'] = $request->all();
+        session(['carts' => $cart]);
+        $user = User::first();
+        dd('islam');
+    }
+    public function shipping(Request $request){
+        $carts = Cart::where('user_id', Auth::user()->id)->get();
+        //        if (Session::has('cart') && count(Session::get('cart')) > 0) {
+                if ($carts && count($carts) > 0) {
+                    $categories = Category::all();
+                    return view('frontend.shiip', compact('categories', 'carts'));
+                }
+                flash(translate('Your cart is empty'))->success();
+                return back();
     }
 
     //check the selected payment gateway and redirect to that controller accordingly

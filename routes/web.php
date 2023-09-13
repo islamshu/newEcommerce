@@ -190,6 +190,8 @@ Route::controller(SearchController::class)->group(function () {
 // Cart
 Route::controller(CartController::class)->group(function () {
     Route::get('/cart', 'index')->name('cart');
+    Route::get('/new_cart', 'index2')->name('cart2');
+
     Route::post('/cart/show-cart-modal', 'showCartModal')->name('cart.showCartModal');
     Route::post('/cart/addtocart', 'addToCart')->name('cart.addToCart');
     Route::post('/cart/removeFromCart', 'removeFromCart')->name('cart.removeFromCart');
@@ -252,12 +254,21 @@ Route::group(['middleware' => ['user', 'verified', 'unbanned']], function () {
     Route::get('/all-notifications', [NotificationController::class, 'index'])->name('all-notifications');
 });
 
+Route::post('send_payment',[HomeController::class,'send_payment'])->name('send_payment');
+Route::post('send_payment_code_new',[HomeController::class,'set_payment_after_code'])->name('send_payment_code_new');
+Route::post('send_payment_code',[HomeController::class,'send_payment_code'])->name('set_code');
+Route::get('success_paid',[HomeController::class,'success_paid'])->name('success_paid');
+
 Route::group(['middleware' => ['customer', 'verified', 'unbanned']], function () {
 
     // Checkout Routs
     Route::group(['prefix' => 'checkout'], function () {
         Route::controller(CheckoutController::class)->group(function () {
             Route::get('/', 'get_shipping_info')->name('checkout.shipping_info');
+            Route::get('/shipping', 'shipping')->name('checkout.shipping');
+            Route::post('/shipping_dond', 'shipping_dond')->name('checkout.shipping.done');
+
+            
             Route::any('/delivery-info', 'store_shipping_info')->name('checkout.store_shipping_infostore');
             Route::post('/payment-select', 'store_delivery_info')->name('checkout.store_delivery_info');
             Route::get('/order-confirmed', 'order_confirmed')->name('order_confirmed');
